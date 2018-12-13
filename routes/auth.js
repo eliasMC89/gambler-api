@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
 
-const { isLoggedIn } = require('../helpers/middlewares');
+// const { isLoggedIn } = require('../helpers/middlewares');
 
 router.get('/me', (req, res, next) => {
   if (req.session.currentUser) {
@@ -94,15 +94,29 @@ router.post('/signup', (req, res, next) => {
     .catch(next);
 });
 
+// router.put('/profile/edit', (req, res, next) => {
+//   const userId = req.session.currentUser;
+//   const updateUser = req.body;
+
+//   User.findByIdAndUpdate(userId, { $set: updateUser })
+//     .then(() => {
+//       const user = req.session.user;
+//       return res.status(200).json(user);
+//     })
+//     .catch(next);
+// });
+
 router.post('/logout', (req, res) => {
+  // console.log(req.session.currentUser);
   req.session.currentUser = null;
   return res.status(204).send();
 });
 
-router.get('/private', isLoggedIn(), (req, res, next) => {
-  res.status(200).json({
-    message: 'This is a private message'
-  });
-});
+// router.get('/private', isLoggedIn(), (req, res, next) => {
+//   console.log(req.session.currentUser);
+//   res.status(200).json({
+//     message: 'This is a private message'
+//   });
+// });
 
 module.exports = router;
