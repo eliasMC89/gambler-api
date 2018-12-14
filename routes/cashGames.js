@@ -33,4 +33,14 @@ router.post('/create', (req, res, next) => {
     });
 });
 
+// router.put('/add-stack', (req, res, next) => {
+//   const { playerId, finalStack } = req.body;
+//   CashGame.findOneAndUpdate({ 'playerList._id': playerId }, { $set: { 'playerList.$.finalStack': finalStack } })
+//     .then((game) => {
+//       res.json({
+//         cashGame: game
+//       });
+//     });
+// });
+
 module.exports = router;
