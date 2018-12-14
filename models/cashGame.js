@@ -1,16 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
+const Player = require('./player');
 
 const cashGameSchema = new Schema({
-  playerList: [{
-    type: ObjectId,
-    ref: 'Player'
-  }],
+  playerList: [Player.schema],
   pot: {
     type: Number
   },
-  playing: {
+  isPlaying: {
     type: Boolean
   },
   owner: {

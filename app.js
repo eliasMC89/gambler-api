@@ -11,7 +11,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const auth = require('./routes/auth');
-// const cashGames = require('./routes/cashGames');
+const cashGames = require('./routes/cashGames');
 // const players = require('./routes/players');
 
 mongoose.connect(process.env.MONGODB_URI, {
@@ -58,8 +58,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', auth);
-// app.use('/cash-game', cashGames);
-// app.use('/players', players);
+app.use('/cash-game', cashGames);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

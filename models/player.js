@@ -11,10 +11,11 @@ const playerSchema = new Schema({
   },
   finalStack: {
     type: Number
-  },
-  userId: {
-    type: String
   }
+  // ,
+  // userId: {
+  //   type: String
+  // }
 
 });
 
