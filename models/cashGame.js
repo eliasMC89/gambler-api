@@ -4,6 +4,7 @@ const Player = require('./player');
 
 const cashGameSchema = new Schema({
   playerList: [Player.schema],
+  currentPlayerList: [Player.schema],
   pot: {
     type: Number
   },

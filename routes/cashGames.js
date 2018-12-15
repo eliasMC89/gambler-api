@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-// const User = require('../models/user');
 const CashGame = require('../models/cashGame');
 
+// get game detail
 router.get('/:id', (req, res, next) => {
   const { id } = req.params;
 
@@ -15,11 +15,13 @@ router.get('/:id', (req, res, next) => {
     .catch(next);
 });
 
+// create new game
 router.post('/create', (req, res, next) => {
-  const { playerList, pot, isPlaying, owner } = req.body;
+  const { playerList, currentPlayerList, pot, isPlaying, owner } = req.body;
 
   const newCashGame = CashGame({
     playerList,
+    currentPlayerList,
     pot,
     isPlaying,
     owner
@@ -32,15 +34,5 @@ router.post('/create', (req, res, next) => {
       });
     });
 });
-
-// router.put('/add-stack', (req, res, next) => {
-//   const { playerId, finalStack } = req.body;
-//   CashGame.findOneAndUpdate({ 'playerList._id': playerId }, { $set: { 'playerList.$.finalStack': finalStack } })
-//     .then((game) => {
-//       res.json({
-//         cashGame: game
-//       });
-//     });
-// });
 
 module.exports = router;

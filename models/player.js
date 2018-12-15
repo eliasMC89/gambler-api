@@ -9,13 +9,12 @@ const playerSchema = new Schema({
   buyin: {
     type: Number
   },
+  buyinHistory: [{
+    type: Number
+  }],
   finalStack: {
     type: Number
   }
-  // ,
-  // userId: {
-  //   type: String
-  // }
 
 });
 
