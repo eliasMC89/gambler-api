@@ -3,6 +3,17 @@ const router = express.Router();
 
 const CashGame = require('../models/cashGame');
 
+// Get list of my games
+router.get('/my-games', (req, res, next) => {
+  const userId = req.session.currentUser._id;
+
+  CashGame.find({ owner: userId })
+    .then((games) => {
+      res.json(games);
+    })
+    .catch(next);
+});
+
 // get game detail
 router.get('/:id', (req, res, next) => {
   const { id } = req.params;
@@ -18,13 +29,15 @@ router.get('/:id', (req, res, next) => {
 // create new game
 router.post('/create', (req, res, next) => {
   const { currentPlayerList, pot, isPlaying, owner } = req.body;
+  const startDate = new Date();
 
   const newCashGame = CashGame({
     playerList: [],
     currentPlayerList,
     pot,
     isPlaying,
-    owner
+    owner,
+    startDate
   });
 
   return newCashGame.save()
@@ -32,6 +45,17 @@ router.post('/create', (req, res, next) => {
       res.json({
         game: newCashGame
       });
+    });
+});
+
+// End game and update end date
+router.put('/:id/end-game', (req, res, next) => {
+  const { id } = req.params;
+  const endDate = new Date();
+
+  CashGame.findByIdAndUpdate(id, { $set: { endDate } })
+    .then((game) => {
+      res.json(game);
     });
 });
 
@@ -48,25 +72,17 @@ router.put('/player-stack/:playerId', (req, res, next) => {
 });
 
 // Add rebuy
-router.put('/player-rebuy/:playerId', (req, res, next) => {
-  const { playerId } = req.params;
+router.put('/:id/player-rebuy/:playerId', (req, res, next) => {
+  const { id, playerId } = req.params;
   const { rebuy } = req.body;
 
   CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $inc: { 'currentPlayerList.$.buyin': rebuy } })
     .then((game) => {
-      res.json(game);
+      CashGame.findByIdAndUpdate(id, { $inc: { pot: rebuy } })
+        .then((game) => {
+          res.json(game);
+        });
     });
 });
-
-// test edit
-// router.put('/:id/testUpdate', (req, res, next) => {
-//   const { id } = req.params;
-//   // const { finalStack } = req.body;
-
-//   CashGame.findByIdAndUpdate(id, { $set: { pot: '1000' } })
-//     .then((game) => {
-//       res.json(game);
-//     });
-// });
 
 module.exports = router;

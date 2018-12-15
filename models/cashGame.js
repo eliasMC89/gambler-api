@@ -13,11 +13,12 @@ const cashGameSchema = new Schema({
   },
   owner: {
     type: String
-  }
-}, {
-  timestamps: {
-    createdAt: 'Start date',
-    updatedAt: 'End date'
+  },
+  startDate: {
+    type: Date
+  },
+  endDate: {
+    type: Date
   }
 });
 
