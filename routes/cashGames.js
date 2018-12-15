@@ -47,6 +47,17 @@ router.put('/player-stack/:playerId', (req, res, next) => {
     });
 });
 
+// Add rebuy
+router.put('/player-rebuy/:playerId', (req, res, next) => {
+  const { playerId } = req.params;
+  const { rebuy } = req.body;
+
+  CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $inc: { 'currentPlayerList.$.buyin': rebuy } })
+    .then((game) => {
+      res.json(game);
+    });
+});
+
 // test edit
 // router.put('/:id/testUpdate', (req, res, next) => {
 //   const { id } = req.params;
