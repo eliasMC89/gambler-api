@@ -17,10 +17,10 @@ router.get('/:id', (req, res, next) => {
 
 // create new game
 router.post('/create', (req, res, next) => {
-  const { playerList, currentPlayerList, pot, isPlaying, owner } = req.body;
+  const { currentPlayerList, pot, isPlaying, owner } = req.body;
 
   const newCashGame = CashGame({
-    playerList,
+    playerList: [],
     currentPlayerList,
     pot,
     isPlaying,
@@ -34,5 +34,28 @@ router.post('/create', (req, res, next) => {
       });
     });
 });
+
+// Add final stack to player
+router.put('/player-stack/:playerId', (req, res, next) => {
+  const { playerId } = req.params;
+  const { finalStack } = req.body;
+  // const finalStack = 999;
+
+  CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $set: { 'currentPlayerList.$.finalStack': finalStack } })
+    .then((game) => {
+      res.json(game);
+    });
+});
+
+// test edit
+// router.put('/:id/testUpdate', (req, res, next) => {
+//   const { id } = req.params;
+//   // const { finalStack } = req.body;
+
+//   CashGame.findByIdAndUpdate(id, { $set: { pot: '1000' } })
+//     .then((game) => {
+//       res.json(game);
+//     });
+// });
 
 module.exports = router;
