@@ -45,7 +45,20 @@ router.post('/create', (req, res, next) => {
       res.json({
         game: newCashGame
       });
-    });
+    })
+    .catch(next);
+});
+
+// Delete game
+router.delete('/:id', (req, res, next) => {
+  const { id } = req.params;
+
+  CashGame.findByIdAndRemove(id)
+    .then((game) => {
+      res.status(200);
+      res.json(game);
+    })
+    .catch(next);
 });
 
 // End game and update end date
@@ -56,7 +69,8 @@ router.put('/:id/end-game', (req, res, next) => {
   CashGame.findByIdAndUpdate(id, { $set: { endDate } })
     .then((game) => {
       res.json(game);
-    });
+    })
+    .catch(next);
 });
 
 // Add final stack to player
@@ -68,7 +82,8 @@ router.put('/player-stack/:playerId', (req, res, next) => {
   CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $set: { 'currentPlayerList.$.finalStack': finalStack } })
     .then((game) => {
       res.json(game);
-    });
+    })
+    .catch(next);
 });
 
 // Add rebuy
@@ -81,7 +96,8 @@ router.put('/:id/player-rebuy/:playerId', (req, res, next) => {
       CashGame.findByIdAndUpdate(id, { $inc: { pot: rebuy } })
         .then((game) => {
           res.json(game);
-        });
+        })
+        .catch(next);
     });
 });
 
