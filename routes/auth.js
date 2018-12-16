@@ -94,6 +94,12 @@ router.post('/signup', (req, res, next) => {
     .catch(next);
 });
 
+router.post('/logout', (req, res) => {
+  // console.log(req.session.currentUser);
+  req.session.currentUser = null;
+  return res.status(204).send();
+});
+
 // router.put('/profile/edit', (req, res, next) => {
 //   const userId = req.session.currentUser;
 //   const updateUser = req.body;
@@ -105,12 +111,6 @@ router.post('/signup', (req, res, next) => {
 //     })
 //     .catch(next);
 // });
-
-router.post('/logout', (req, res) => {
-  // console.log(req.session.currentUser);
-  req.session.currentUser = null;
-  return res.status(204).send();
-});
 
 // router.get('/private', isLoggedIn(), (req, res, next) => {
 //   console.log(req.session.currentUser);
