@@ -28,15 +28,23 @@ router.get('/:id', (req, res, next) => {
 
 // create new game
 router.post('/create', (req, res, next) => {
+<<<<<<< HEAD
   const { currentPlayerList, pot, owner } = req.body;
+=======
+  const { currentPlayerList, pot, owner, isPlaying } = req.body;
+>>>>>>> master
   const startDate = new Date();
 
   const newCashGame = CashGame({
     playerList: [],
     currentPlayerList,
     pot,
+<<<<<<< HEAD
     isPlaying: true,
+=======
+>>>>>>> master
     owner,
+    isPlaying,
     startDate
   });
 
@@ -57,6 +65,22 @@ router.delete('/:id', (req, res, next) => {
     .then((game) => {
       res.status(200);
       res.json(game);
+    })
+    .catch(next);
+});
+
+// Add player while playing
+router.put('/:id/new-player', (req, res, next) => {
+  const { id } = req.params;
+  const { newRebuy, currentPlayerList } = req.body;
+
+  CashGame.findByIdAndUpdate(id, { $set: { 'currentPlayerList': currentPlayerList } })
+    .then(() => {
+      CashGame.findByIdAndUpdate(id, { $inc: { 'pot': newRebuy } })
+        .then((game) => {
+          res.json(game);
+        })
+        .catch(next);
     })
     .catch(next);
 });
