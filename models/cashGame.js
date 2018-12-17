@@ -8,6 +8,9 @@ const cashGameSchema = new Schema({
   pot: {
     type: Number
   },
+  remainingPot: {
+    type: Number
+  },
   isPlaying: {
     type: Boolean
   },

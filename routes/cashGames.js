@@ -28,13 +28,14 @@ router.get('/:id', (req, res, next) => {
 
 // create new game
 router.post('/create', (req, res, next) => {
-  const { currentPlayerList, pot, owner, isPlaying } = req.body;
+  const { currentPlayerList, pot, remainingPot, owner, isPlaying } = req.body;
   const startDate = new Date();
 
   const newCashGame = CashGame({
     playerList: [],
     currentPlayerList,
     pot,
+    remainingPot,
     owner,
     isPlaying,
     startDate
@@ -90,13 +91,17 @@ router.put('/:id/end-game', (req, res, next) => {
 });
 
 // Add final stack to player
-router.put('/player-stack/:playerId', (req, res, next) => {
-  const { playerId } = req.params;
+router.put('/:id/player-stack/:playerId', (req, res, next) => {
+  const { id, playerId } = req.params;
   const { finalStack } = req.body;
 
   CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $set: { 'currentPlayerList.$.finalStack': finalStack, 'currentPlayerList.$.isPlaying': false } })
-    .then((game) => {
-      res.json(game);
+    .then(() => {
+      CashGame.findByIdAndUpdate(id, { $inc: { remainingPot: -finalStack } })
+        .then((game) => {
+          res.json(game);
+        })
+        .catch(next);
     })
     .catch(next);
 });
