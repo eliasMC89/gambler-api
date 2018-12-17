@@ -69,7 +69,7 @@ router.put('/:id/new-player', (req, res, next) => {
 
   CashGame.findByIdAndUpdate(id, { $set: { 'currentPlayerList': currentPlayerList } })
     .then(() => {
-      CashGame.findByIdAndUpdate(id, { $inc: { 'pot': newRebuy } })
+      CashGame.findByIdAndUpdate(id, { $inc: { 'pot': newRebuy, 'remainingPot': newRebuy } })
         .then((game) => {
           res.json(game);
         })
