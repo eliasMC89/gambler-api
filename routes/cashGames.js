@@ -66,7 +66,7 @@ router.put('/:id/end-game', (req, res, next) => {
   const { id } = req.params;
   const endDate = new Date();
 
-  CashGame.findByIdAndUpdate(id, { $set: { endDate } })
+  CashGame.findByIdAndUpdate(id, { $set: { endDate, isPlaying: false } })
     .then((game) => {
       res.json(game);
     })
@@ -77,9 +77,8 @@ router.put('/:id/end-game', (req, res, next) => {
 router.put('/player-stack/:playerId', (req, res, next) => {
   const { playerId } = req.params;
   const { finalStack } = req.body;
-  // const finalStack = 999;
 
-  CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $set: { 'currentPlayerList.$.finalStack': finalStack } })
+  CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $set: { 'currentPlayerList.$.finalStack': finalStack, 'currentPlayerList.$.isPlaying': false } })
     .then((game) => {
       res.json(game);
     })

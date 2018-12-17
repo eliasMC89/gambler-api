@@ -14,6 +14,9 @@ const playerSchema = new Schema({
   }],
   finalStack: {
     type: Number
+  },
+  isPlaying: {
+    type: Boolean
   }
 
 });
