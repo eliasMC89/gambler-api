@@ -100,23 +100,4 @@ router.post('/logout', (req, res) => {
   return res.status(204).send();
 });
 
-// router.put('/profile/edit', (req, res, next) => {
-//   const userId = req.session.currentUser;
-//   const updateUser = req.body;
-
-//   User.findByIdAndUpdate(userId, { $set: updateUser })
-//     .then(() => {
-//       const user = req.session.user;
-//       return res.status(200).json(user);
-//     })
-//     .catch(next);
-// });
-
-// router.get('/private', isLoggedIn(), (req, res, next) => {
-//   console.log(req.session.currentUser);
-//   res.status(200).json({
-//     message: 'This is a private message'
-//   });
-// });
-
 module.exports = router;
