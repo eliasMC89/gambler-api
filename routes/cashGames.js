@@ -28,14 +28,14 @@ router.get('/:id', (req, res, next) => {
 
 // create new game
 router.post('/create', (req, res, next) => {
-  const { currentPlayerList, pot, isPlaying, owner } = req.body;
+  const { currentPlayerList, pot, owner } = req.body;
   const startDate = new Date();
 
   const newCashGame = CashGame({
     playerList: [],
     currentPlayerList,
     pot,
-    isPlaying,
+    isPlaying: true,
     owner,
     startDate
   });
