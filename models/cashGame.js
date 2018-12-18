@@ -14,9 +14,12 @@ const cashGameSchema = new Schema({
   isPlaying: {
     type: Boolean
   },
-  owner: {
+  owner: [{
     type: String
-  },
+  }],
+  pendingOwners: [{
+    type: String
+  }],
   startDate: {
     type: Date
   },

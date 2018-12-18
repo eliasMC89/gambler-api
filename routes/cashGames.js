@@ -115,10 +115,25 @@ router.put('/:id/player-rebuy/:playerId', (req, res, next) => {
     .then((game) => {
       CashGame.findByIdAndUpdate(id, { $inc: { pot: rebuy } })
         .then((game) => {
-          res.json(game);
+          CashGame.findByIdAndUpdate(id, { $inc: { remainingPot: rebuy } })
+            .then((game) => {
+              res.json(game);
+            })
+            .catch(next);
         })
         .catch(next);
     });
+});
+
+// Share with user (add to pending owner)
+router.put('/:gameId/share/:shareUserId', (req, res, next) => {
+  const { gameId, shareUserId } = req.params;
+
+  CashGame.findByIdAndUpdate(gameId, { $push: { pendingOwners: shareUserId } })
+    .then((game) => {
+      res.json(game);
+    })
+    .catch(next);
 });
 
 module.exports = router;
