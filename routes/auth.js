@@ -100,4 +100,14 @@ router.post('/logout', (req, res) => {
   return res.status(204).send();
 });
 
+router.get('/search/:username', (req, res, next) => {
+  const username = req.params.username;
+
+  User.findOne({ username }, 'username')
+    .then((username) => {
+      res.json(username);
+    })
+    .catch(next);
+});
+
 module.exports = router;
