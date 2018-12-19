@@ -114,13 +114,9 @@ router.put('/:id/new-player', (req, res, next) => {
   const { id } = req.params;
   const { newRebuy, currentPlayerList } = req.body;
 
-  CashGame.findByIdAndUpdate(id, { $set: { 'currentPlayerList': currentPlayerList } })
-    .then(() => {
-      CashGame.findByIdAndUpdate(id, { $inc: { 'pot': newRebuy, 'remainingPot': newRebuy } })
-        .then((game) => {
-          res.json(game);
-        })
-        .catch(next);
+  CashGame.findByIdAndUpdate(id, { $set: { 'currentPlayerList': currentPlayerList }, $inc: { 'pot': newRebuy, 'remainingPot': newRebuy } })
+    .then((game) => {
+      res.json(game);
     })
     .catch(next);
 });
@@ -158,15 +154,11 @@ router.put('/:id/player-rebuy/:playerId', (req, res, next) => {
   const { id, playerId } = req.params;
   const { rebuy } = req.body;
 
-  CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $inc: { 'currentPlayerList.$.buyin': rebuy } })
-    .then((game) => {
-      CashGame.findByIdAndUpdate(id, { $inc: { pot: rebuy } })
+  CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $inc: { 'currentPlayerList.$.buyin': rebuy }, $push: { 'currentPlayerList.$.buyinHistory': rebuy } })
+    .then(() => {
+      CashGame.findByIdAndUpdate(id, { $inc: { pot: rebuy, remainingPot: rebuy } })
         .then((game) => {
-          CashGame.findByIdAndUpdate(id, { $inc: { remainingPot: rebuy } })
-            .then((game) => {
-              res.json(game);
-            })
-            .catch(next);
+          res.json(game);
         })
         .catch(next);
     });
