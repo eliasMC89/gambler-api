@@ -7,7 +7,18 @@ const CashGame = require('../models/cashGame');
 router.get('/my-games', (req, res, next) => {
   const userId = req.session.currentUser._id;
 
-  CashGame.find({ owner: userId })
+  CashGame.find({ $or: [{ owner: userId }, { secondaryOwners: userId }] })
+    .then((games) => {
+      res.json(games);
+    })
+    .catch(next);
+});
+
+// Get list of pending shared games
+router.get('/my-shared-games', (req, res, next) => {
+  const userId = req.session.currentUser._id;
+
+  CashGame.find({ pendingOwners: userId })
     .then((games) => {
       res.json(games);
     })
@@ -57,6 +68,42 @@ router.delete('/:id', (req, res, next) => {
   CashGame.findByIdAndRemove(id)
     .then((game) => {
       res.status(200);
+      res.json(game);
+    })
+    .catch(next);
+});
+
+// Delete shared game
+router.put('/:id/delete-shared', (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.session.currentUser._id;
+
+  CashGame.findByIdAndUpdate(id, { $pull: { secondaryOwners: userId } })
+    .then((game) => {
+      res.json(game);
+    })
+    .catch(next);
+});
+
+// Add to secondary owner after invitation accept
+router.put('/:id/new-owner', (req, res, next) => {
+  const userId = req.session.currentUser._id;
+  const { id } = req.params;
+
+  CashGame.findByIdAndUpdate(id, { $push: { secondaryOwners: userId }, $pull: { pendingOwners: userId } })
+    .then((game) => {
+      res.json(game);
+    })
+    .catch(next);
+});
+
+// Delete from pending after invitation reject
+router.put('/:id/reject-share', (req, res, next) => {
+  const userId = req.session.currentUser._id;
+  const { id } = req.params;
+
+  CashGame.findByIdAndUpdate(id, { $pull: { pendingOwners: userId } })
+    .then((game) => {
       res.json(game);
     })
     .catch(next);
