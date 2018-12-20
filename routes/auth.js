@@ -4,8 +4,6 @@ const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
 
-// const { isLoggedIn } = require('../helpers/middlewares');
-
 router.get('/me', (req, res, next) => {
   if (req.session.currentUser) {
     res.json(req.session.currentUser);
@@ -19,7 +17,7 @@ router.get('/me', (req, res, next) => {
 router.post('/login', (req, res, next) => {
   if (req.session.currentUser) {
     return res.status(401).json({
-      error: 'unauthorized'
+      error: 'Unauthorized'
     });
   }
 
@@ -27,7 +25,7 @@ router.post('/login', (req, res, next) => {
 
   if (!username || !password) {
     return res.status(422).json({
-      error: 'empty fields'
+      error: 'Fill in all the fields'
     });
   }
 
@@ -37,7 +35,7 @@ router.post('/login', (req, res, next) => {
     .then((user) => {
       if (!user) {
         return res.status(404).json({
-          error: 'user not exists'
+          error: 'Username does not exist'
         });
       }
       // TODO async bcrypt
@@ -46,7 +44,7 @@ router.post('/login', (req, res, next) => {
         return res.status(200).json(user);
       }
       return res.status(404).json({
-        error: 'wrong password'
+        error: 'Wrong password'
       });
     })
     .catch(next);
@@ -60,7 +58,7 @@ router.post('/signup', (req, res, next) => {
 
   if (!username || !password) {
     return res.status(422).json({
-      error: 'empty'
+      error: 'Fill in all the fields'
     });
   }
 
@@ -70,7 +68,7 @@ router.post('/signup', (req, res, next) => {
     .then((userExists) => {
       if (userExists) {
         return res.status(422).json({
-          error: 'username-not-unique'
+          error: 'Choose another username'
         });
       }
 

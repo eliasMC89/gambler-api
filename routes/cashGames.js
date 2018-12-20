@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const CashGame = require('../models/cashGame');
+const { isLoggedIn } = require('../helpers/middlewares');
 
 // Get list of my games
 router.get('/my-games', (req, res, next) => {
@@ -15,7 +16,7 @@ router.get('/my-games', (req, res, next) => {
 });
 
 // Get list of pending shared games
-router.get('/my-shared-games', (req, res, next) => {
+router.get('/my-shared-games', isLoggedIn(), (req, res, next) => {
   const userId = req.session.currentUser._id;
 
   CashGame.find({ pendingOwners: userId })
@@ -26,7 +27,7 @@ router.get('/my-shared-games', (req, res, next) => {
 });
 
 // get game detail
-router.get('/:id', (req, res, next) => {
+router.get('/:id', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
 
   CashGame.findById(id)
@@ -38,7 +39,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 // create new game
-router.post('/create', (req, res, next) => {
+router.post('/create', isLoggedIn(), (req, res, next) => {
   const { currentPlayerList, pot, remainingPot, owner, isPlaying } = req.body;
   const startDate = new Date();
 
@@ -62,7 +63,7 @@ router.post('/create', (req, res, next) => {
 });
 
 // Delete game
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
 
   CashGame.findByIdAndRemove(id)
@@ -74,7 +75,7 @@ router.delete('/:id', (req, res, next) => {
 });
 
 // Delete shared game
-router.put('/:id/delete-shared', (req, res, next) => {
+router.put('/:id/delete-shared', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
   const userId = req.session.currentUser._id;
 
@@ -86,7 +87,7 @@ router.put('/:id/delete-shared', (req, res, next) => {
 });
 
 // Add to secondary owner after invitation accept
-router.put('/:id/new-owner', (req, res, next) => {
+router.put('/:id/new-owner', isLoggedIn(), (req, res, next) => {
   const userId = req.session.currentUser._id;
   const { id } = req.params;
 
@@ -98,7 +99,7 @@ router.put('/:id/new-owner', (req, res, next) => {
 });
 
 // Delete from pending after invitation reject
-router.put('/:id/reject-share', (req, res, next) => {
+router.put('/:id/reject-share', isLoggedIn(), (req, res, next) => {
   const userId = req.session.currentUser._id;
   const { id } = req.params;
 
@@ -110,7 +111,7 @@ router.put('/:id/reject-share', (req, res, next) => {
 });
 
 // Add player while playing
-router.put('/:id/new-player', (req, res, next) => {
+router.put('/:id/new-player', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
   const { newRebuy, currentPlayerList } = req.body;
 
@@ -122,7 +123,7 @@ router.put('/:id/new-player', (req, res, next) => {
 });
 
 // End game and update end date
-router.put('/:id/end-game', (req, res, next) => {
+router.put('/:id/end-game', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
   const endDate = new Date();
 
@@ -134,7 +135,7 @@ router.put('/:id/end-game', (req, res, next) => {
 });
 
 // Add final stack to player
-router.put('/:id/player-stack/:playerId', (req, res, next) => {
+router.put('/:id/player-stack/:playerId', isLoggedIn(), (req, res, next) => {
   const { id, playerId } = req.params;
   const { finalStack } = req.body;
 
@@ -150,7 +151,7 @@ router.put('/:id/player-stack/:playerId', (req, res, next) => {
 });
 
 // Add rebuy
-router.put('/:id/player-rebuy/:playerId', (req, res, next) => {
+router.put('/:id/player-rebuy/:playerId', isLoggedIn(), (req, res, next) => {
   const { id, playerId } = req.params;
   const { rebuy } = req.body;
 
@@ -165,7 +166,7 @@ router.put('/:id/player-rebuy/:playerId', (req, res, next) => {
 });
 
 // Share with user (add to pending owner)
-router.put('/:gameId/share/:shareUserId', (req, res, next) => {
+router.put('/:gameId/share/:shareUserId', isLoggedIn(), (req, res, next) => {
   const { gameId, shareUserId } = req.params;
 
   CashGame.findByIdAndUpdate(gameId, { $push: { pendingOwners: shareUserId } })
