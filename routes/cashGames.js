@@ -33,8 +33,6 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
   // control authorization
   CashGame.findById(id)
     .then((game) => {
-      console.log(req.session.currentUser._id);
-      console.log(game);
       if (game.owner === req.session.currentUser._id || game.secondaryOwners.includes(req.session.currentUser._id)) {
         CashGame.findById(id)
           .then((game) => {
@@ -254,7 +252,7 @@ router.put('/:gameId/share/:shareUserId', isLoggedIn(), (req, res, next) => {
   // control authorization
   CashGame.findById(gameId)
     .then((game) => {
-      if (game.owner === req.session.currentUser._id) {
+      if (game.owner === req.session.currentUser._id || game.secondaryOwners.includes(req.session.currentUser._id)) {
         CashGame.findByIdAndUpdate(gameId, { $push: { pendingOwners: shareUserId } })
           .then((game) => {
             res.json(game);
