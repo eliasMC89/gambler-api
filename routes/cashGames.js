@@ -33,7 +33,9 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
   // control authorization
   CashGame.findById(id)
     .then((game) => {
-      if (game.owner === req.session.currentUser._id) {
+      console.log(req.session.currentUser._id);
+      console.log(game);
+      if (game.owner === req.session.currentUser._id || game.secondaryOwners.includes(req.session.currentUser._id)) {
         CashGame.findById(id)
           .then((game) => {
             res.status(200);
