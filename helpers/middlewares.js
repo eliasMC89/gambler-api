@@ -1,3 +1,5 @@
+const CashGame = require('../models/cashGame');
+
 exports.isLoggedIn = () => (req, res, next) => {
   if (req.session.currentUser) {
     next();

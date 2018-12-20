@@ -30,12 +30,25 @@ router.get('/my-shared-games', isLoggedIn(), (req, res, next) => {
 router.get('/:id', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
 
+  // control authorization
   CashGame.findById(id)
     .then((game) => {
-      res.status(200);
-      res.json(game);
+      if (game.owner === req.session.currentUser._id) {
+        CashGame.findById(id)
+          .then((game) => {
+            res.status(200);
+            res.json(game);
+          })
+          .catch(next);
+      } else {
+        return res.status(401).json({
+          error: 'Unauthorized'
+        });
+      }
     })
-    .catch(next);
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 // create new game
@@ -66,12 +79,27 @@ router.post('/create', isLoggedIn(), (req, res, next) => {
 router.delete('/:id', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
 
-  CashGame.findByIdAndRemove(id)
+  // control authorization
+  CashGame.findById(id)
     .then((game) => {
-      res.status(200);
-      res.json(game);
+      if (game.owner === req.session.currentUser._id) {
+        CashGame.findByIdAndRemove(id)
+          .then((game) => {
+            res.status(200);
+            res.json(game);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
+        return res.status(401).json({
+          error: 'Unauthorized'
+        });
+      }
     })
-    .catch(next);
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 // Delete shared game
@@ -115,11 +143,24 @@ router.put('/:id/new-player', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
   const { newRebuy, currentPlayerList } = req.body;
 
-  CashGame.findByIdAndUpdate(id, { $set: { 'currentPlayerList': currentPlayerList }, $inc: { 'pot': newRebuy, 'remainingPot': newRebuy } })
+  // control authorization
+  CashGame.findById(id)
     .then((game) => {
-      res.json(game);
+      if (game.owner === req.session.currentUser._id) {
+        CashGame.findByIdAndUpdate(id, { $set: { 'currentPlayerList': currentPlayerList }, $inc: { 'pot': newRebuy, 'remainingPot': newRebuy } })
+          .then((game) => {
+            res.json(game);
+          })
+          .catch(next);
+      } else {
+        return res.status(401).json({
+          error: 'Unauthorized'
+        });
+      }
     })
-    .catch(next);
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 // End game and update end date
@@ -127,11 +168,24 @@ router.put('/:id/end-game', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
   const endDate = new Date();
 
-  CashGame.findByIdAndUpdate(id, { $set: { endDate, isPlaying: false } })
+  // control authorization
+  CashGame.findById(id)
     .then((game) => {
-      res.json(game);
+      if (game.owner === req.session.currentUser._id) {
+        CashGame.findByIdAndUpdate(id, { $set: { endDate, isPlaying: false } })
+          .then((game) => {
+            res.json(game);
+          })
+          .catch(next);
+      } else {
+        return res.status(401).json({
+          error: 'Unauthorized'
+        });
+      }
     })
-    .catch(next);
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 // Add final stack to player
@@ -139,15 +193,28 @@ router.put('/:id/player-stack/:playerId', isLoggedIn(), (req, res, next) => {
   const { id, playerId } = req.params;
   const { finalStack } = req.body;
 
-  CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $set: { 'currentPlayerList.$.finalStack': finalStack, 'currentPlayerList.$.isPlaying': false } })
-    .then(() => {
-      CashGame.findByIdAndUpdate(id, { $inc: { remainingPot: -finalStack } })
-        .then((game) => {
-          res.json(game);
-        })
-        .catch(next);
+  // control authorization
+  CashGame.findById(id)
+    .then((game) => {
+      if (game.owner === req.session.currentUser._id) {
+        CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $set: { 'currentPlayerList.$.finalStack': finalStack, 'currentPlayerList.$.isPlaying': false } })
+          .then(() => {
+            CashGame.findByIdAndUpdate(id, { $inc: { remainingPot: -finalStack } })
+              .then((game) => {
+                res.json(game);
+              })
+              .catch(next);
+          })
+          .catch(next);
+      } else {
+        return res.status(401).json({
+          error: 'Unauthorized'
+        });
+      }
     })
-    .catch(next);
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 // Add rebuy
@@ -155,13 +222,26 @@ router.put('/:id/player-rebuy/:playerId', isLoggedIn(), (req, res, next) => {
   const { id, playerId } = req.params;
   const { rebuy } = req.body;
 
-  CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $inc: { 'currentPlayerList.$.buyin': rebuy }, $push: { 'currentPlayerList.$.buyinHistory': rebuy } })
-    .then(() => {
-      CashGame.findByIdAndUpdate(id, { $inc: { pot: rebuy, remainingPot: rebuy } })
-        .then((game) => {
-          res.json(game);
-        })
-        .catch(next);
+  // control authorization
+  CashGame.findById(id)
+    .then((game) => {
+      if (game.owner === req.session.currentUser._id) {
+        CashGame.findOneAndUpdate({ 'currentPlayerList._id': playerId }, { $inc: { 'currentPlayerList.$.buyin': rebuy }, $push: { 'currentPlayerList.$.buyinHistory': rebuy } })
+          .then(() => {
+            CashGame.findByIdAndUpdate(id, { $inc: { pot: rebuy, remainingPot: rebuy } })
+              .then((game) => {
+                res.json(game);
+              })
+              .catch(next);
+          });
+      } else {
+        return res.status(401).json({
+          error: 'Unauthorized'
+        });
+      }
+    })
+    .catch(error => {
+      console.log(error);
     });
 });
 
@@ -169,11 +249,24 @@ router.put('/:id/player-rebuy/:playerId', isLoggedIn(), (req, res, next) => {
 router.put('/:gameId/share/:shareUserId', isLoggedIn(), (req, res, next) => {
   const { gameId, shareUserId } = req.params;
 
-  CashGame.findByIdAndUpdate(gameId, { $push: { pendingOwners: shareUserId } })
+  // control authorization
+  CashGame.findById(gameId)
     .then((game) => {
-      res.json(game);
+      if (game.owner === req.session.currentUser._id) {
+        CashGame.findByIdAndUpdate(gameId, { $push: { pendingOwners: shareUserId } })
+          .then((game) => {
+            res.json(game);
+          })
+          .catch(next);
+      } else {
+        return res.status(401).json({
+          error: 'Unauthorized'
+        });
+      }
     })
-    .catch(next);
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 module.exports = router;
