@@ -93,7 +93,6 @@ router.post('/signup', (req, res, next) => {
 });
 
 router.post('/logout', (req, res) => {
-  // console.log(req.session.currentUser);
   req.session.currentUser = null;
   return res.status(204).send();
 });
