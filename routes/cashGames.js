@@ -5,7 +5,7 @@ const CashGame = require('../models/cashGame');
 const { isLoggedIn } = require('../helpers/middlewares');
 
 // Get list of my games
-router.get('/my-games', (req, res, next) => {
+router.get('/my-games', isLoggedIn(), (req, res, next) => {
   const userId = req.session.currentUser._id;
 
   CashGame.find({ $or: [{ owner: userId }, { secondaryOwners: userId }] })
@@ -33,6 +33,8 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
   // control authorization
   CashGame.findById(id)
     .then((game) => {
+      // console.log(game.status);
+      // console.log(game.msg);
       if (game.owner === req.session.currentUser._id || game.secondaryOwners.includes(req.session.currentUser._id)) {
         CashGame.findById(id)
           .then((game) => {
@@ -47,7 +49,7 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log(error);
+      res.status(404).json(error);
     });
 });
 
