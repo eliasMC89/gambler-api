@@ -33,8 +33,6 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
   // control authorization
   CashGame.findById(id)
     .then((game) => {
-      // console.log(game.status);
-      // console.log(game.msg);
       if (game.owner === req.session.currentUser._id || game.secondaryOwners.includes(req.session.currentUser._id)) {
         CashGame.findById(id)
           .then((game) => {
@@ -49,7 +47,7 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      res.status(404).json(error);
+      res.status(400).json(error);
     });
 });
 
@@ -74,7 +72,9 @@ router.post('/create', isLoggedIn(), (req, res, next) => {
         game: newCashGame
       });
     })
-    .catch(next);
+    .catch(error => {
+      res.status(500).json(error);
+    });
 });
 
 // Delete game
@@ -91,7 +91,7 @@ router.delete('/:id', isLoggedIn(), (req, res, next) => {
             res.json(game);
           })
           .catch(error => {
-            console.log(error);
+            res.status(500).json({ err: error, msg: 'Cannot delete game' });
           });
       } else {
         return res.status(401).json({
@@ -100,7 +100,7 @@ router.delete('/:id', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log(error);
+      res.status(400).json(error);
     });
 });
 
@@ -113,7 +113,9 @@ router.put('/:id/delete-shared', isLoggedIn(), (req, res, next) => {
     .then((game) => {
       res.json(game);
     })
-    .catch(next);
+    .catch(error => {
+      res.status(400).json(error);
+    });
 });
 
 // Add to secondary owner after invitation accept
@@ -125,7 +127,9 @@ router.put('/:id/new-owner', isLoggedIn(), (req, res, next) => {
     .then((game) => {
       res.json(game);
     })
-    .catch(next);
+    .catch(error => {
+      res.status(400).json(error);
+    });
 });
 
 // Delete from pending after invitation reject
@@ -137,7 +141,9 @@ router.put('/:id/reject-share', isLoggedIn(), (req, res, next) => {
     .then((game) => {
       res.json(game);
     })
-    .catch(next);
+    .catch(error => {
+      res.status(400).json(error);
+    });
 });
 
 // Add player while playing
@@ -161,7 +167,7 @@ router.put('/:id/new-player', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log(error);
+      res.status(400).json(error);
     });
 });
 
@@ -186,7 +192,7 @@ router.put('/:id/end-game', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log(error);
+      res.status(400).json(error);
     });
 });
 
@@ -215,7 +221,7 @@ router.put('/:id/player-stack/:playerId', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log(error);
+      res.status(400).json(error);
     });
 });
 
@@ -243,7 +249,7 @@ router.put('/:id/player-rebuy/:playerId', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log(error);
+      res.status(400).json(error);
     });
 });
 
@@ -267,7 +273,7 @@ router.put('/:gameId/share/:shareUserId', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log(error);
+      res.status(400).json(error);
     });
 });
 
