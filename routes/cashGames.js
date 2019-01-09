@@ -12,7 +12,9 @@ router.get('/my-games', isLoggedIn(), (req, res, next) => {
     .then((games) => {
       res.json(games);
     })
-    .catch(next);
+    .catch(error => {
+      res.status(500).json(error);
+    });
 });
 
 // Get list of pending shared games
@@ -23,7 +25,9 @@ router.get('/my-shared-games', isLoggedIn(), (req, res, next) => {
     .then((games) => {
       res.json(games);
     })
-    .catch(next);
+    .catch(error => {
+      res.status(500).json(error);
+    });
 });
 
 // get game detail
@@ -46,8 +50,8 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
         });
       }
     })
-    .catch(() => {
-      res.status(400).json({ code: 'Bad request' });
+    .catch(error => {
+      res.status(400).json(error);
     });
 });
 
@@ -213,7 +217,9 @@ router.put('/:id/player-stack/:playerId', isLoggedIn(), (req, res, next) => {
               })
               .catch(next);
           })
-          .catch(next);
+          .catch(error => {
+            res.status(400).json(error);
+          });
       } else {
         return res.status(401).json({
           error: 'Unauthorized'
@@ -241,6 +247,9 @@ router.put('/:id/player-rebuy/:playerId', isLoggedIn(), (req, res, next) => {
                 res.json(game);
               })
               .catch(next);
+          })
+          .catch(error => {
+            res.status(400).json(error);
           });
       } else {
         return res.status(401).json({
