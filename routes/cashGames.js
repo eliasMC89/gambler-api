@@ -46,8 +46,8 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
         });
       }
     })
-    .catch(error => {
-      res.status(400).json(error);
+    .catch(() => {
+      res.status(400).json({ code: 'Bad request' });
     });
 });
 
