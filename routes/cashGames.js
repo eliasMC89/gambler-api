@@ -263,14 +263,14 @@ router.put('/:id/player-rebuy/:playerId', isLoggedIn(), (req, res, next) => {
 });
 
 // Share with user (add to pending owner)
-router.put('/:gameId/share/:shareUserId', isLoggedIn(), (req, res, next) => {
-  const { gameId, shareUserId } = req.params;
+router.put('/:id/share/:shareUserId', isLoggedIn(), (req, res, next) => {
+  const { id, shareUserId } = req.params;
 
   // control authorization
-  CashGame.findById(gameId)
+  CashGame.findById(id)
     .then((game) => {
       if (game.owner === req.session.currentUser._id || game.secondaryOwners.includes(req.session.currentUser._id)) {
-        CashGame.findByIdAndUpdate(gameId, { $push: { pendingOwners: shareUserId } })
+        CashGame.findByIdAndUpdate(id, { $push: { pendingOwners: shareUserId } })
           .then((game) => {
             res.json(game);
           })
