@@ -51,7 +51,7 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -104,7 +104,7 @@ router.delete('/:id', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -118,7 +118,7 @@ router.put('/:id/delete-shared', isLoggedIn(), (req, res, next) => {
       res.json(game);
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -132,7 +132,7 @@ router.put('/:id/new-owner', isLoggedIn(), (req, res, next) => {
       res.json(game);
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -146,7 +146,7 @@ router.put('/:id/reject-share', isLoggedIn(), (req, res, next) => {
       res.json(game);
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -171,7 +171,7 @@ router.put('/:id/new-player', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -196,7 +196,7 @@ router.put('/:id/end-game', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -227,7 +227,7 @@ router.put('/:id/player-stack/:playerId', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -249,7 +249,7 @@ router.put('/:id/player-rebuy/:playerId', isLoggedIn(), (req, res, next) => {
               .catch(next);
           })
           .catch(error => {
-            res.status(400).json(error);
+            res.status(500).json(error);
           });
       } else {
         return res.status(401).json({
@@ -258,7 +258,7 @@ router.put('/:id/player-rebuy/:playerId', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
@@ -282,7 +282,7 @@ router.put('/:id/share/:shareUserId', isLoggedIn(), (req, res, next) => {
       }
     })
     .catch(error => {
-      res.status(400).json(error);
+      res.status(500).json(error);
     });
 });
 
