@@ -109,6 +109,8 @@ Poker cash game organizer that keeps a history of all the games a user has playe
     
 ## Link
 
+Mobile version:
+
 https://gambler-app.firebaseapp.com/
 
 
